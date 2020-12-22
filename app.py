@@ -4,6 +4,7 @@ sio = socketio.Server()
 app = socketio.WSGIApp(sio, static_files={
     '/': './public/'
 })
+client_count = 0
 
 
 def task(sid):
@@ -14,13 +15,19 @@ def task(sid):
 
 @sio.event
 def connect(sid, environ):
+    global client_count
+    client_count += 1
     print(sid, 'connected')
     sio.start_background_task(task, sid)
+    sio.emit('client_count', client_count)
 
 
 @sio.event
 def disconnect(sid):
+    global client_count
+    client_count -= 1
     print(sid, 'disconnected')
+    sio.emit('client_count', client_count)
 
 
 @sio.event

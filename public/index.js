@@ -15,3 +15,7 @@ sio.on('mult', (data, cb) => {
   const result = data.numbers[0] * data.numbers[1];
   cb(result);
 });
+
+sio.on('client_count', (count) => {
+  console.log('There are ' + count + ' connected clients.');
+});

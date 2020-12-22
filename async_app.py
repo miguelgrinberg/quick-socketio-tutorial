@@ -4,6 +4,7 @@ sio = socketio.AsyncServer(async_mode='asgi')
 app = socketio.ASGIApp(sio, static_files={
     '/': './public/'
 })
+client_count = 0
 
 
 async def task(sid):
@@ -14,13 +15,19 @@ async def task(sid):
 
 @sio.event
 async def connect(sid, environ):
+    global client_count
+    client_count += 1
     print(sid, 'connected')
     sio.start_background_task(task, sid)
+    await sio.emit('client_count', client_count)
 
 
 @sio.event
 async def disconnect(sid):
+    global client_count
+    client_count -= 1
     print(sid, 'disconnected')
+    await sio.emit('client_count', client_count)
 
 
 @sio.event
