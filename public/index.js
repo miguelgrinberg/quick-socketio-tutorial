@@ -19,3 +19,7 @@ sio.on('mult', (data, cb) => {
 sio.on('client_count', (count) => {
   console.log('There are ' + count + ' connected clients.');
 });
+
+sio.on('room_count', (count) => {
+  console.log('There are ' + count + ' clients in my room.');
+});
