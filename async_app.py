@@ -27,6 +27,10 @@ async def connect(sid, environ):
     if not username:
         return False
 
+    async with sio.session(sid) as session:
+        session['username'] = username
+    await sio.emit('user_joined', username)
+
     client_count += 1
     print(sid, 'connected')
     sio.start_background_task(task, sid)
@@ -55,6 +59,9 @@ async def disconnect(sid):
     else:
         b_count -= 1
         await sio.emit('room_count', b_count, to='b')
+
+    async with sio.session(sid) as session:
+        await sio.emit('user_left', session['username'])
 
 
 @sio.event
