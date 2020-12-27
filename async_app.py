@@ -21,6 +21,12 @@ async def connect(sid, environ):
     global client_count
     global a_count
     global b_count
+
+    username = environ.get('HTTP_X_USERNAME')
+    print('username:', username)
+    if not username:
+        return False
+
     client_count += 1
     print(sid, 'connected')
     sio.start_background_task(task, sid)
